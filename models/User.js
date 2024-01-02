@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 
 const User = new mongoose.Schema({
-  firstname: {
+  firstName: {
     type: String,
     require: true,
     trim: true,
   },
-  lastname: {
+  lastName: {
     type: String,
     require: true,
     trim: true,
@@ -17,6 +17,10 @@ const User = new mongoose.Schema({
     trim: true,
   },
   passsword: {
+    type: String,
+    require: true,
+  },
+  contactNumber: {
     type: String,
     require: true,
   },
