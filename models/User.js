@@ -16,7 +16,7 @@ const User = new mongoose.Schema({
     require: true,
     trim: true,
   },
-  passsword: {
+  password: {
     type: String,
     require: true,
   },
@@ -28,6 +28,12 @@ const User = new mongoose.Schema({
     type: String,
     require: true,
     enum: ["Admin", "Student", "Instructor"],
+  },
+  token: {
+    type: String,
+  },
+  resetPasswordExpires: {
+    type: Date,
   },
   additionalDetails: {
     type: mongoose.Schema.Types.ObjectId,
