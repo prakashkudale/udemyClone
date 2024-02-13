@@ -2,16 +2,15 @@ const SubSection = require("../models/SubSection");
 const Section = require("../models/Section");
 const { uploadImageToCloudinary } = require("../utils/imageUploader");
 
-exports.createSubsection = async (req, res) => {
+exports.createSubSection = async (req, res) => {
   try {
     const { title, timeDuration, description, sectionId } = req.body;
     const videoFile = req.files.videoFile;
 
-    if (!title || !timeDuration || !description || !videoFile || sectionId) {
+    if (!title || !timeDuration || !description || !videoFile || !sectionId) {
       return res.status(401).json({
         success: false,
-        message: "failed to create section",
-        error: error.message,
+        message: "please fill all the fields..",
       });
     }
 
@@ -36,21 +35,23 @@ exports.createSubsection = async (req, res) => {
         $push: { subSection: createSubsection._id },
       },
       { new: true }
-    );
+    ).populate("subSection");
 
     return res.status(200).json({
       success: true,
       message: "SubSection Created Successfully",
+      data: updatedSection,
     });
   } catch (error) {
     return res.status(501).json({
       success: false,
       message: "failed to create subsection",
+      error: error.message,
     });
   }
 };
 
-exports.updateSubsection = async (req, res) => {
+exports.updateSubSection = async (req, res) => {
   try {
     const { title, timeDuration, description, sectionId } = req.body;
     const videoFile = req.files.videoFile;
@@ -95,7 +96,7 @@ exports.updateSubsection = async (req, res) => {
   }
 };
 
-exports.deleteSelection = async (req, res) => {
+exports.deleteSubSection = async (req, res) => {
   try {
     const { subSectionId, sectionId } = req.body;
     if (!subSectionId || !sectionId) {
@@ -120,4 +121,3 @@ exports.deleteSelection = async (req, res) => {
     });
   } catch (error) {}
 };
-

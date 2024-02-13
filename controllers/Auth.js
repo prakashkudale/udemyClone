@@ -70,13 +70,12 @@ exports.signUp = async (req, res) => {
       password,
       confirmPassword,
       accountType,
-      contactNumber,
       otp,
     } = req.body;
 
     // validating data
 
-    if (!firstName || lastName || email || password || otp) {
+    if (!firstName || !lastName || !email || !password || !otp) {
       return res.status(400).json({
         success: false,
         message: "All fields are required",
@@ -104,7 +103,7 @@ exports.signUp = async (req, res) => {
       });
     }
 
-    // cheking user exist or not
+    // checking user exist or not
     const checkUser = await User.findOne({ email });
     if (checkUser) {
       return res.status(403).json({
@@ -150,7 +149,6 @@ exports.signUp = async (req, res) => {
       lastName,
       email,
       accountType,
-      contactNumber,
       password: hashedPassword,
       additionalDetails: profileDetails._id,
       image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`,
@@ -189,7 +187,7 @@ exports.login = async (req, res) => {
       });
     }
 
-    const hashedPassword = await bcrypt.compare(password, user.password);
+    const hashedPassword = bcrypt.compare(password, user.password);
 
     if (hashedPassword) {
       const payload = {
@@ -204,7 +202,7 @@ exports.login = async (req, res) => {
       user.password = undefined;
 
       const option = {
-        expires: new Date(Date.now + 3 * 24 * 60 * 60 * 1000),
+        expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
         httpOnly: true,
       };
       res.cookie("token", token, option).status(200).json({

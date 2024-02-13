@@ -1,4 +1,5 @@
 const Category = require("../models/Category");
+const Course = require("../models/Course");
 
 exports.createCategory = async (req, res) => {
   try {
@@ -40,6 +41,52 @@ exports.getAllCategory = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Something Went wrong " + error.message,
+    });
+  }
+};
+
+exports.categoryPageDetails = async (req, res) => {
+  try {
+    const { categoryId } = req.body;
+
+    const selectedCategory = await Category.findById({
+      _id: categoryId,
+    })
+      .populate("course")
+      .exec();
+
+    if (!selectedCategory) {
+      return res.status(400).json({
+        success: false,
+        message: "Not Found Course with this category",
+      });
+    }
+
+    const differentCategory = await Category.find({
+      _id: { $ne: categoryId },
+    })
+      .populate("course")
+      .exec();
+
+    // Find all courses in the category and sort by the number of studentsEnrolled in descending order
+    const topSellingCourses = await Course.find({ category: categoryId })
+      .sort({ studentsEnrolled: -1 })
+      .limit(10); // You can adjust the limit based on your requirement
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        selectedCategory,
+        differentCategory,
+        topSellingCourses,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      message: "Failed to get courses.",
     });
   }
 };

@@ -4,7 +4,7 @@ const Course = require("../models/Course");
 exports.createSection = async (req, res) => {
   try {
     const { sectionName, courseId } = req.body;
-    if (!sectionName || courseId) {
+    if (!sectionName || !courseId) {
       return res.status(401).json({
         success: false,
         message: "please enter all field",
@@ -19,7 +19,7 @@ exports.createSection = async (req, res) => {
       { $push: { courseContent: createdSection._id } }
     );
     return (
-      res.status(200),
+      res.status(200).
       json({
         success: true,
         message: "section created successfully",
